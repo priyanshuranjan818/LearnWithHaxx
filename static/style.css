@@ -65,6 +65,23 @@ a {
     color: #3c3c3c;
 }
 
+.install-btn {
+    margin-left: auto;
+    background: #58cc02;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.install-btn:hover {
+    background: #45a002;
+}
+
 /* ─── Stats Bar ──────────────────────────────────── */
 .stats-bar {
     display: flex;
