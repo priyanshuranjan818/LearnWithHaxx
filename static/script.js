@@ -240,4 +240,31 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// ─── Install prompt handling ─────────────────────────
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show our custom install button
+    if (installBtn) {
+        installBtn.style.display = 'inline-block';
+    }
+});
+
+if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const choiceResult = await deferredPrompt.userChoice;
+            console.log('User response to install prompt:', choiceResult);
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        }
+    });
+}
+
+
 
