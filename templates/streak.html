@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streak - LearnWithHaxx</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GermanApp">
+</head>
+
+<body class="streak-body">
+    <!-- Header -->
+    <header class="top-header streak-header">
+        <a href="/" class="back-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#4b4b4b">
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+        </a>
+        <div class="header-title">Streak</div>
+    </header>
+
+    <!-- Streak Hero Section -->
+    <div class="streak-hero">
+        <div class="streak-society-badge">STREAK SOCIETY</div>
+        <div class="streak-display">
+            <div class="streak-number">{{ user.streak }}</div>
+            <div class="streak-flame-bg">🔥</div>
+        </div>
+        <div class="streak-label">day streak!</div>
+    </div>
+
+    <!-- Motivational Card -->
+    <div class="motivation-card">
+        <div class="motivation-icon">⏱️</div>
+        <div class="motivation-text">
+            <p>Add {{ [5 - today_count, 0]|max }} more word{{ 's' if (5 - today_count) != 1 else '' }} today to extend
+                your streak!</p>
+            <a href="/add" class="start-lesson-link">START LESSON</a>
+        </div>
+    </div>
+
+    <!-- Streak Calendar -->
+    <div class="calendar-section">
+        <h3 class="section-title">Streak Calendar</h3>
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <button class="cal-nav" id="calPrev" onclick="changeMonth(-1)">◀</button>
+                <span class="cal-month" id="calMonth">February 2026</span>
+                <button class="cal-nav" id="calNext" onclick="changeMonth(1)">▶</button>
+            </div>
+            <div class="calendar-days-header">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Streak Goal -->
+    <div class="streak-goal-section">
+        <h3 class="section-title">Streak Goal</h3>
+        <div class="goal-card">
+            <div class="goal-progress-ring">
+                <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="35" stroke="#e5e5e5" stroke-width="6" fill="none" />
+                    <circle cx="40" cy="40" r="35" stroke="#ff9600" stroke-width="6" fill="none"
+                        stroke-dasharray="{{ (today_count / 5 * 220)|round }}, 220" stroke-linecap="round"
+                        transform="rotate(-90 40 40)" />
+                </svg>
+                <div class="goal-count">{{ today_count }}/5</div>
+            </div>
+            <div class="goal-info">
+                <div class="goal-title">Daily Word Goal</div>
+                <div class="goal-desc">Add 5 words today to keep your streak alive!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item" title="Home">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="/add" class="nav-item" title="Add Word">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Add</span>
+        </a>
+        <a href="/learn" class="nav-item" title="Learn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span>Learn</span>
+        </a>
+        <a href="/streak" class="nav-item active" title="Streak">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
+            </svg>
+            <span>Streak</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Initialize calendar when page loads
+        document.addEventListener('DOMContentLoaded', initCalendar);
+    </script>
+</body>
+
+</html>

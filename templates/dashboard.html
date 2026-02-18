@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnWithHaxx - German Vocabulary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GermanApp">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="top-header">
+        <div class="header-title">Practice your words</div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-badge streak-badge" onclick="window.location.href='/streak'">
+            <span class="stat-icon">🔥</span>
+            <span class="stat-value">{{ user.streak }}</span>
+        </div>
+        <div class="stat-badge words-badge">
+            <span class="stat-icon">📚</span>
+            <span class="stat-value">{{ today_count }} / 5</span>
+        </div>
+    </div>
+
+    <!-- Word List -->
+    <div class="word-list">
+        {% if words %}
+        {% for word in words %}
+        <div class="word-row">
+            <button class="speak-btn" onclick="speakGerman('{{ word.german_word }}')" title="Listen">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 9v6h4l5 5V4L7 9H3z" fill="#1cb0f6" />
+                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="#1cb0f6" />
+                    <path
+                        d="M19 12c0 3.53-2.04 6.58-5 8.03v2.21c4.01-1.58 6.86-5.41 6.86-10.24S18.01 3.34 14 1.76v2.21c2.96 1.45 5 4.5 5 8.03z"
+                        fill="#1cb0f6" opacity="0.5" />
+                </svg>
+            </button>
+            <div class="word-info">
+                <div class="german-word">{{ word.german_word }}</div>
+                <div class="word-meaning">{{ word.meaning }}</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📖</div>
+            <p>No words yet!</p>
+            <p class="empty-sub">Add your first German word to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item active" title="Home">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="/add" class="nav-item" title="Add Word">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Add</span>
+        </a>
+        <a href="/learn" class="nav-item" title="Learn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span>Learn</span>
+        </a>
+        <a href="/streak" class="nav-item" title="Streak">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
+            </svg>
+            <span>Streak</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

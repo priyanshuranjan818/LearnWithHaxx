@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Word - LearnWithHaxx</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="GermanApp">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="top-header">
+        <a href="/" class="back-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#4b4b4b">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+        </a>
+        <div class="header-title">Add New Word</div>
+    </header>
+
+    <!-- Add Word Form -->
+    <div class="form-container">
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+        <form action="/save_word" method="POST" class="add-form">
+            <div class="form-group">
+                <label for="german_word">German Word</label>
+                <input type="text" id="german_word" name="german_word" placeholder="e.g. Gummibärchen" required
+                    autofocus>
+            </div>
+            <div class="form-group">
+                <label for="meaning">English Meaning</label>
+                <input type="text" id="meaning" name="meaning" placeholder="e.g. gummy bears" required>
+            </div>
+
+            <div class="form-group">
+                <label for="example">Example Sentence <span class="optional">(optional)</span></label>
+                <textarea id="example" name="example" placeholder="e.g. Ich liebe Gummibärchen!" rows="3"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">
+                <span>Add Word</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <!-- Manage Words Section -->
+    <div class="manage-section">
+        <h3 class="section-title" style="padding: 0 20px;">Manage Your Words</h3>
+        <div class="word-list">
+            {% if words %}
+            {% for word in words %}
+            <div class="word-row">
+                <div class="word-info">
+                    <div class="german-word">{{ word.german_word }}</div>
+                    <div class="word-meaning">{{ word.meaning }}</div>
+                </div>
+                <form action="/delete_word/{{ word.id }}" method="POST" class="delete-form">
+                    <button type="submit" class="delete-btn" title="Delete word">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state" style="padding: 40px 20px;">
+                <p class="empty-sub">No words added yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item" title="Home">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="/add" class="nav-item active" title="Add Word">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <span>Add</span>
+        </a>
+        <a href="/learn" class="nav-item" title="Learn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span>Learn</span>
+        </a>
+        <a href="/streak" class="nav-item" title="Streak">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
+            </svg>
+            <span>Streak</span>
+        </a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
