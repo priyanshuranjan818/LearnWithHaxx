@@ -181,6 +181,12 @@ a {
     line-height: 1.3;
 }
 
+.word-category {
+    font-size: 12px;
+    color: #777;
+    margin-top: 2px;
+}
+
 .word-meaning {
     font-size: 14px;
     color: #afafaf;
@@ -214,6 +220,44 @@ a {
     padding: 60px 20px;
     color: #afafaf;
 }
+
+/* Style dropdown arrow for select to match inputs */
+.form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23777' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px; /* make space for arrow */
+}
+
+/* Category group (dashboard) */
+.category-group {
+    margin-bottom: 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.category-group > summary {
+    background: #fafafa;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+.category-group[open] > summary {
+    border-bottom: 1px solid #e5e5e5;
+}
+.category-group > summary::-webkit-details-marker {
+    display: none;
+}
+.category-group > summary:after {
+    content: '▾';
+    float: right;
+    transform-origin: center;
+}
+.category-group:not([open]) > summary:after {
+    content: '▸';
+}
+
 
 .empty-icon {
     font-size: 48px;
@@ -272,7 +316,7 @@ a {
     letter-spacing: 0.5px;
 }
 
-.optional {
+.form-group .optional {
     font-weight: 400;
     text-transform: none;
     letter-spacing: normal;
@@ -280,7 +324,8 @@ a {
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     padding: 14px 16px;
     border: 2px solid #e5e5e5;
     border-radius: 14px;
@@ -290,6 +335,12 @@ a {
     transition: border-color 0.2s, box-shadow 0.2s;
     background: #fafafa;
     outline: none;
+    width: 100%;          /* make select expand like inputs */
+    box-sizing: border-box;
+    height: 48px;         /* match input height */
+    line-height: 1.2;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .form-group input:focus,

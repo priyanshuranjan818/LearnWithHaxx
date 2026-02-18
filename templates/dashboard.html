@@ -39,23 +39,28 @@
     <!-- Word List -->
     <div class="word-list">
         {% if words %}
-        {% for word in words %}
-        <div class="word-row">
-            <button class="speak-btn" onclick="speakGerman('{{ word.german_word }}')" title="Listen">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 9v6h4l5 5V4L7 9H3z" fill="#1cb0f6" />
-                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="#1cb0f6" />
-                    <path
-                        d="M19 12c0 3.53-2.04 6.58-5 8.03v2.21c4.01-1.58 6.86-5.41 6.86-10.24S18.01 3.34 14 1.76v2.21c2.96 1.45 5 4.5 5 8.03z"
-                        fill="#1cb0f6" opacity="0.5" />
-                </svg>
-            </button>
-            <div class="word-info">
-                <div class="german-word">{{ word.german_word }}</div>
-                <div class="word-meaning">{{ word.meaning }}</div>
-            </div>
-        </div>
-        {% endfor %}
+            {% for category, items in words.items() %}
+                <details class="category-group" open>
+                    <summary>{{ category }} ({{ items|length }})</summary>
+                    {% for word in items %}
+                    <div class="word-row">
+                        <button class="speak-btn" onclick="speakGerman('{{ word.german_word }}')" title="Listen">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 9v6h4l5 5V4L7 9H3z" fill="#1cb0f6" />
+                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="#1cb0f6" />
+                                <path
+                                    d="M19 12c0 3.53-2.04 6.58-5 8.03v2.21c4.01-1.58 6.86-5.41 6.86-10.24S18.01 3.34 14 1.76v2.21c2.96 1.45 5 4.5 5 8.03z"
+                                    fill="#1cb0f6" opacity="0.5" />
+                            </svg>
+                        </button>
+                        <div class="word-info">
+                            <div class="german-word">{{ word.german_word }}</div>
+                            <div class="word-meaning">{{ word.meaning }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </details>
+            {% endfor %}
         {% else %}
         <div class="empty-state">
             <div class="empty-icon">📖</div>
@@ -96,6 +101,21 @@
     </nav>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // ensure only one category is expanded at a time
+        document.addEventListener('DOMContentLoaded', () => {
+            const groups = document.querySelectorAll('.category-group');
+            groups.forEach(det => {
+                det.addEventListener('toggle', () => {
+                    if (det.open) {
+                        groups.forEach(other => {
+                            if (other !== det) other.open = false;
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

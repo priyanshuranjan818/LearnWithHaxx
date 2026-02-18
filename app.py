@@ -34,10 +34,16 @@ def init_db():
             german_word TEXT NOT NULL,
             meaning TEXT NOT NULL,
             example TEXT,
+            part_of_speech TEXT,
             date_added TEXT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     ''')
+    # ensure new column exists for older databases
+    cursor.execute("PRAGMA table_info(words)")
+    cols = [row[1] for row in cursor.fetchall()]
+    if 'part_of_speech' not in cols:
+        cursor.execute("ALTER TABLE words ADD COLUMN part_of_speech TEXT")
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS streak_dates (
@@ -144,10 +150,16 @@ def dashboard():
     """Dashboard page showing words and stats."""
     conn = get_db()
     user = conn.execute('SELECT * FROM users WHERE id = 1').fetchone()
-    words = conn.execute(
-        'SELECT * FROM words WHERE user_id = 1 ORDER BY date_added DESC'
+    rows = conn.execute(
+        'SELECT * FROM words WHERE user_id = 1 ORDER BY part_of_speech, date_added DESC'
     ).fetchall()
     conn.close()
+
+    # Group words by part_of_speech for the template
+    words = {}
+    for w in rows:
+        cat = w['part_of_speech'] or 'Uncategorized'
+        words.setdefault(cat, []).append(w)
 
     today_count = get_today_word_count()
 
@@ -186,6 +198,7 @@ def save_word():
     german_word = request.form.get('german_word', '').strip()
     meaning = request.form.get('meaning', '').strip()
     example = request.form.get('example', '').strip()
+    part_of_speech = request.form.get('part_of_speech', '').strip()
 
     if german_word and meaning:
         conn = get_db()
@@ -201,8 +214,8 @@ def save_word():
             return render_template('add_word.html', error=f"The word '{german_word}' already exists!")
 
         conn.execute(
-            'INSERT INTO words (user_id, german_word, meaning, example, date_added) VALUES (?, ?, ?, ?, ?)',
-            (1, german_word, meaning, example, date.today().isoformat())
+            'INSERT INTO words (user_id, german_word, meaning, example, part_of_speech, date_added) VALUES (?, ?, ?, ?, ?, ?)',
+            (1, german_word, meaning, example, part_of_speech, date.today().isoformat())
         )
         conn.commit()
         conn.close()
@@ -246,6 +259,7 @@ def api_words():
             'german_word': w['german_word'],
             'meaning': w['meaning'],
             'example': w['example'],
+            'part_of_speech': w['part_of_speech'],
             'date_added': w['date_added']
         }
         for w in words
@@ -281,4 +295,5 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
